@@ -73,21 +73,21 @@ print(df['subtotal'].head())
 
 ## Assume a shipping price of $7 per pound for orders over 50 pounds and $10 per pound for items 50 pounds or under
 
-def calculation_shipping_price(row):
-    item_weight = row['unit_weight']
+def calculation_shipping_price(item_weight):
+
     if item_weight > 50:
-        shipping_price = item_weight *7
-    else:
-        shipping_price = item_weight* 10
-    return shipping_price
-df['shipping_price'] = df.apply(calculation_shipping_price, axis=1)
+        return item_weight * 7
+    return item_weight * 10
+
+df['total_weight'] = df['qty']* df['unit_weight']
+df['shipping_price'] = df['total_weight'].apply(calculation_shipping_price)
 print(df[['unit_weight', 'shipping_price']].head())
 
 ## Create a column for the total price using the subtotal and the shipping price along with a sales tax of 9.25%
 
-sales_tax_rate = 0.0925
-df['total_price'] = df['subtotal'] + df['shipping_price'] + df['subtotal'] * sales_tax_rate
-print(df['total_price'])
+sales_tax_rate = 1.0925
+df['total_price'] = round((df['subtotal'] + df['shipping_price']) * sales_tax_rate,2)
+df
 
 ## Create a column for the cost of each line using unit cost, qty, and
 
